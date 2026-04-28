@@ -6,39 +6,30 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;background:#020508}
+html,body{width:100%;background:#020508}
 
-/* ── LAYOUT ── */
 .screen{
   width:1280px;min-height:720px;
   background:#020508;
   display:grid;
   grid-template-rows:auto 1fr auto;
-  position:relative;
-  overflow:hidden;
+  position:relative;overflow:hidden;
   font-family:'Barlow Condensed',sans-serif;
 }
-
-/* SCAN LINES */
 .screen::after{
   content:'';position:absolute;inset:0;pointer-events:none;z-index:10;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.18) 2px,rgba(0,0,0,.18) 3px);
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.15) 2px,rgba(0,0,0,.15) 3px);
 }
-
-/* STAR FIELD background */
 .stars{position:absolute;inset:0;z-index:0;overflow:hidden}
 .star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d,3s) ease-in-out infinite}
-@keyframes twinkle{0%,100%{opacity:.2}50%{opacity:.9}}
+@keyframes twinkle{0%,100%{opacity:.15}50%{opacity:.85}}
 
-/* ═══════════════════════════════════════
-   HEADER
-═══════════════════════════════════════ */
+/* ── HEADER ── */
 .header{
   position:relative;z-index:2;
   padding:28px 56px 0;
   display:flex;align-items:flex-start;justify-content:space-between;
 }
-.header-left{}
 .op-label{
   font-family:'Share Tech Mono',monospace;
   font-size:11px;color:#ff3d3d;letter-spacing:.25em;
@@ -47,390 +38,306 @@ html,body{width:100%;height:100%;background:#020508}
 .op-label::before{content:'';width:32px;height:1px;background:#ff3d3d}
 .op-title{
   font-family:'Bebas Neue',sans-serif;
-  font-size:72px;line-height:.95;letter-spacing:.06em;
-  color:#fff;
+  font-size:72px;line-height:.9;letter-spacing:.06em;color:#fff;
 }
 .op-title em{color:#f5a623;font-style:normal}
 .op-sub{
   font-family:'Share Tech Mono',monospace;font-size:11px;
-  color:#2a4a6a;letter-spacing:.14em;margin-top:8px;
+  color:#1a3550;letter-spacing:.14em;margin-top:8px;
 }
 
-.header-right{text-align:right;padding-top:8px}
+.header-right{text-align:right;padding-top:6px}
 .status-chip{
   display:inline-block;
   font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.14em;
   padding:4px 12px;border-radius:2px;margin-bottom:8px;
 }
-.status-chip.files-done{background:#0a2a00;color:#00e676;border:1px solid #004d1a}
-.status-chip.locked{background:#2a0a0a;color:#ff3d3d;border:1px solid #5a1a1a}
-.status-chip.unlocked{background:#001a0a;color:#00e676;border:1px solid #004d1a}
-
-.header-stat{
-  font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:.12em;
-  color:#2a4a6a;line-height:1.6;
+.status-chip.locked{background:#1a0808;color:#ff3d3d;border:1px solid #3a0f0f}
+.hstat{
+  font-family:'Share Tech Mono',monospace;font-size:11px;
+  color:#1a3550;letter-spacing:.08em;line-height:1.9;
 }
-.header-stat span{color:#f5a623}
+.hstat span{color:#f5a623}
+.hstat span.grey{color:#2a4a6a}
 
-/* ═══════════════════════════════════════
-   LEADERBOARD
-═══════════════════════════════════════ */
+/* ── LEADERBOARD ── */
 .leaderboard{
   position:relative;z-index:2;
-  padding:24px 40px 8px;
-  display:flex;flex-direction:column;gap:6px;
+  padding:20px 40px 6px;
+  display:flex;flex-direction:column;gap:5px;
 }
 .lb-heading{
   font-family:'Share Tech Mono',monospace;font-size:10px;
-  color:#1a3550;letter-spacing:.2em;margin-bottom:12px;
+  color:#0d2030;letter-spacing:.2em;margin-bottom:10px;
   display:flex;align-items:center;gap:12px;
 }
-.lb-heading::after{content:'';flex:1;height:1px;background:#0d2540}
+.lb-heading::after{content:'';flex:1;height:1px;background:#081520}
 
+/* cols: rank | name+role | files | mib | net | bar-bg */
 .agent-row{
   display:grid;
-  grid-template-columns: 56px 1fr 280px 200px 160px;
-  align-items:center;
-  gap:0;
-  padding:0 20px 0 0;
-  border-radius:4px;
-  position:relative;
-  overflow:hidden;
-  transition:background .2s;
+  grid-template-columns:60px 1fr 240px 180px 160px;
+  align-items:stretch;
+  border-radius:3px;
+  position:relative;overflow:hidden;
 }
-
-/* rank glow strip */
+/* left accent */
 .agent-row::before{
   content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:#0d2030;
 }
-.rank-1::before{background:#f5a623;box-shadow:0 0 12px #f5a623}
-.rank-2::before{background:#b0bec5}
-.rank-3::before{background:#a0522d}
-.rank-4::before,.rank-5::before{background:#1a3a5a}
+/* all tied at 0 — neutral styling */
+.agent-row{background:rgba(7,17,30,0.7)}
 
-/* row background */
-.rank-1{background:rgba(245,166,35,0.06)}
-.rank-2{background:rgba(176,190,197,0.04)}
-.rank-3{background:rgba(160,82,45,0.04)}
-.rank-4,.rank-5{background:rgba(10,25,45,0.5)}
-
-/* rank number */
 .lb-rank{
   font-family:'Bebas Neue',sans-serif;
-  font-size:48px;line-height:1;letter-spacing:.04em;
-  text-align:center;padding:14px 0;
+  font-size:42px;line-height:1;
+  color:#0d2030;
+  display:flex;align-items:center;justify-content:center;
+  padding:14px 0;
 }
-.rank-1 .lb-rank{color:#f5a623}
-.rank-2 .lb-rank{color:#b0bec5}
-.rank-3 .lb-rank{color:#a0522d}
-.rank-4 .lb-rank,.rank-5 .lb-rank{color:#1e3a5a}
 
-/* agent identity */
-.lb-identity{padding:14px 16px}
+.lb-identity{padding:14px 16px;display:flex;flex-direction:column;justify-content:center}
 .lb-role-tag{
   font-family:'Share Tech Mono',monospace;font-size:9px;
-  letter-spacing:.12em;color:#2a5a8a;display:flex;align-items:center;gap:5px;
-  margin-bottom:2px;
+  letter-spacing:.12em;color:#1a3550;
+  display:flex;align-items:center;gap:5px;margin-bottom:2px;
 }
-.role-pip{width:5px;height:5px;border-radius:50%}
+.role-pip{width:5px;height:5px;border-radius:50%;flex-shrink:0}
 .pip-ae{background:#4fc3f7}
 .pip-bdr{background:#00e676}
 .pip-se{background:#ce93d8}
-
 .lb-name{
   font-family:'Bebas Neue',sans-serif;
-  font-size:60px;line-height:.9;letter-spacing:.05em;color:#dce9f5;
+  font-size:52px;line-height:.9;letter-spacing:.05em;color:#1e3a5a;
 }
-.rank-1 .lb-name{color:#fff}
 
-/* files block */
-.lb-files{padding:14px 0;text-align:center}
+.lb-files{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:14px 0;border-left:1px solid #081828;
+}
 .files-num{
   font-family:'Bebas Neue',sans-serif;
-  font-size:72px;line-height:.9;letter-spacing:.03em;
+  font-size:60px;line-height:.9;letter-spacing:.03em;color:#1e3a5a;
 }
-.rank-1 .files-num{color:#f5a623}
-.rank-2 .files-num{color:#b0bec5}
-.rank-3 .files-num{color:#cd7f32}
-.rank-4 .files-num,.rank-5 .files-num{color:#1e4060}
 .files-label{
   font-family:'Share Tech Mono',monospace;font-size:9px;
-  color:#1a3550;letter-spacing:.12em;margin-top:2px;
+  color:#0d2030;letter-spacing:.1em;margin-top:3px;
 }
 
-/* mib block */
-.lb-mib{padding:14px 16px;text-align:center}
-.mib-seized{
-  font-family:'Bebas Neue',sans-serif;font-size:28px;
-  color:#ff3d3d;line-height:1;letter-spacing:.06em;
+.lb-mib{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:14px 0;border-left:1px solid #081828;
 }
-.mib-seized.zero{color:#0d2540}
-.mib-label{font-family:'Share Tech Mono',monospace;font-size:8px;color:#1a3550;letter-spacing:.1em;margin-top:2px}
-
-/* net block */
-.lb-net{padding:14px 0;text-align:center}
-.net-num{
-  font-family:'Bebas Neue',sans-serif;font-size:38px;
-  line-height:1;letter-spacing:.04em;
+.mib-val{
+  font-family:'Bebas Neue',sans-serif;font-size:36px;
+  color:#0d2030;line-height:1;letter-spacing:.06em;
 }
-.net-positive{color:#00e676}
-.net-zero{color:#1e4060}
-.net-negative{color:#ff3d3d}
-.net-label{font-family:'Share Tech Mono',monospace;font-size:8px;color:#1a3550;letter-spacing:.1em;margin-top:2px}
+.mib-label{font-family:'Share Tech Mono',monospace;font-size:8px;color:#0d2030;letter-spacing:.1em;margin-top:2px}
 
-/* bar */
-.lb-bar{
-  position:absolute;bottom:0;left:56px;right:0;height:2px;
-  background:#0a1a28;
+.lb-net{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:14px 0;border-left:1px solid #081828;
 }
-.lb-bar-fill{height:100%;background:linear-gradient(90deg,transparent,rgba(245,166,35,.4))}
+.net-val{
+  font-family:'Bebas Neue',sans-serif;font-size:36px;
+  color:#0d2030;line-height:1;letter-spacing:.05em;
+}
+.net-label{font-family:'Share Tech Mono',monospace;font-size:8px;color:#0d2030;letter-spacing:.1em;margin-top:2px}
 
-/* ═══════════════════════════════════════
-   FOOTER STATS
-═══════════════════════════════════════ */
+/* "all agents equal" notice */
+.tied-notice{
+  font-family:'Share Tech Mono',monospace;font-size:9px;
+  color:#0d2030;letter-spacing:.1em;text-align:center;
+  margin-top:6px;padding:6px;
+}
+
+/* ── FOOTER STATS ── */
 .footer-stats{
   position:relative;z-index:2;
-  padding:16px 56px 32px;
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr 1fr;
-  gap:16px;
-  border-top:1px solid #0a1e30;
-  margin-top:8px;
+  padding:14px 56px 28px;
+  display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;
+  border-top:1px solid #081520;margin-top:6px;
 }
 .stat-block{
-  background:rgba(7,17,30,0.8);
-  border:1px solid #0d2540;
-  border-radius:4px;
-  padding:16px 20px;
-  position:relative;overflow:hidden;
+  background:rgba(7,17,30,0.85);
+  border:1px solid #0a1a28;border-radius:3px;
+  padding:14px 18px;position:relative;overflow:hidden;
 }
-.stat-block::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-}
-.stat-block.team-files::before{background:#f5a623}
-.stat-block.revenue::before{background:#00e676}
-.stat-block.disclosure::before{background:#ff3d3d}
-.stat-block.mib-total::before{background:#ce93d8}
-
-.stat-label{
-  font-family:'Share Tech Mono',monospace;font-size:9px;
-  color:#1a3550;letter-spacing:.14em;margin-bottom:6px;
-}
+.stat-block::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.stat-block.s1::before{background:#1e3a5a}
+.stat-block.s2::before{background:#1a3020}
+.stat-block.s3::before{background:#3a1010}
+.stat-block.s4::before{background:#2a1a40}
+.stat-label{font-family:'Share Tech Mono',monospace;font-size:9px;color:#0d2030;letter-spacing:.14em;margin-bottom:5px}
 .stat-value{
   font-family:'Bebas Neue',sans-serif;
-  font-size:48px;line-height:.95;letter-spacing:.04em;
+  font-size:42px;line-height:.95;letter-spacing:.04em;
 }
-.stat-block.team-files .stat-value{color:#f5a623}
-.stat-block.revenue .stat-value{color:#00e676}
-.stat-block.disclosure .stat-value{color:#ff3d3d}
-.stat-block.mib-total .stat-value{color:#ce93d8}
-.stat-sub{
-  font-family:'Share Tech Mono',monospace;font-size:9px;
-  color:#2a4a6a;letter-spacing:.06em;margin-top:4px;
+.stat-block.s1 .stat-value{color:#1e3a5a}
+.stat-block.s2 .stat-value{color:#1a3020}
+.stat-block.s3 .stat-value{color:#3a1010}
+.stat-block.s4 .stat-value{color:#2a1040}
+.stat-sub{font-family:'Share Tech Mono',monospace;font-size:9px;color:#0d2030;letter-spacing:.06em;margin-top:4px}
+.stat-progress{margin-top:8px;height:3px;background:#060e18;border-radius:2px;overflow:hidden}
+.stat-progress-fill{height:100%;border-radius:2px;width:0%}
+
+/* week 0 banner */
+.week0-banner{
+  position:absolute;
+  top:50%;left:50%;transform:translate(-50%,-50%) rotate(-15deg);
+  z-index:5;pointer-events:none;
+  border:4px solid rgba(245,166,35,0.12);
+  padding:12px 48px;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:80px;letter-spacing:.2em;
+  color:rgba(245,166,35,0.05);
+  white-space:nowrap;
 }
 
-/* progress bar inside stat */
-.stat-progress{margin-top:10px;height:4px;background:#0a1e30;border-radius:2px;overflow:hidden}
-.stat-progress-fill{height:100%;border-radius:2px}
-.revenue .stat-progress-fill{background:linear-gradient(90deg,#004d1a,#00e676)}
-.disclosure .stat-progress-fill{background:linear-gradient(90deg,#5a0000,#ff3d3d)}
-
-/* UFO SVG decoration */
+/* ufo deco */
 .ufo-wrap{
-  position:absolute;right:56px;bottom:96px;
-  z-index:2;opacity:0.12;
-  pointer-events:none;
+  position:absolute;right:48px;top:180px;z-index:2;opacity:.07;pointer-events:none;
 }
 </style>
 </head>
 <body>
 <div class="screen" id="screen">
-
-  <!-- Stars -->
   <div class="stars" id="stars"></div>
 
-  <!-- UFO decoration -->
+  <!-- watermark -->
+  <div class="week0-banner">MISSION BEGINS</div>
+
+  <!-- UFO -->
   <div class="ufo-wrap">
-    <svg width="180" height="100" viewBox="0 0 180 100" fill="none">
-      <ellipse cx="90" cy="70" rx="80" ry="18" fill="#4fc3f7" opacity=".6"/>
-      <ellipse cx="90" cy="68" rx="60" ry="14" fill="#0a2a4a"/>
-      <path d="M50 60 Q90 20 130 60" fill="#1a4a7a"/>
-      <ellipse cx="90" cy="60" rx="22" ry="12" fill="#0d3560"/>
-      <circle cx="90" cy="58" r="8" fill="#4fc3f7" opacity=".4"/>
+    <svg width="200" height="110" viewBox="0 0 200 110" fill="none">
+      <ellipse cx="100" cy="80" rx="90" ry="20" fill="#4fc3f7"/>
+      <ellipse cx="100" cy="78" rx="68" ry="16" fill="#0a2a4a"/>
+      <path d="M55 68 Q100 20 145 68" fill="#1a4a7a"/>
+      <ellipse cx="100" cy="68" rx="25" ry="14" fill="#0d3560"/>
+      <circle cx="100" cy="66" r="9" fill="#4fc3f7" opacity=".3"/>
     </svg>
   </div>
 
   <!-- HEADER -->
   <div class="header">
-    <div class="header-left">
-      <div class="op-label">TOP SECRET / CLASSIFIED</div>
+    <div>
+      <div class="op-label">CLASSIFIED — EYES ONLY</div>
       <div class="op-title">OPERATION:<br><em>DISCLOSURE DAY</em></div>
-      <div class="op-sub">// Q2 2026 — FIELD AGENT LEADERBOARD — WEEK IN REVIEW //</div>
+      <div class="op-sub">// Q2 2026 — AGENT LEADERBOARD — MISSION START //</div>
     </div>
     <div class="header-right">
-      <div class="status-chip files-done">✓ FILE THRESHOLD CLEARED</div>
-      <div class="header-stat">MAY CHECKPOINT &nbsp;<span>UNLOCKED ✓</span></div>
-      <div class="header-stat">DISCLOSURE DAY &nbsp;<span style="color:#ff3d3d">$170K REMAINING</span></div>
-      <div class="header-stat" style="margin-top:6px">REVENUE TARGET &nbsp;<span>$570,000</span></div>
-      <div class="header-stat">CLOSED TO DATE &nbsp;<span>$400,000</span></div>
+      <div class="status-chip locked">🔒 MISSION NOT YET STARTED</div>
+      <div class="hstat">MAY CHECKPOINT &nbsp;<span class="grey">0 / 380 files</span></div>
+      <div class="hstat">DISCLOSURE DAY &nbsp;<span class="grey">0 / 1,050 files</span></div>
+      <div class="hstat">REVENUE &nbsp;<span class="grey">$0 / $570,000</span></div>
+      <div class="hstat" style="margin-top:6px">ALL AGENTS &nbsp;<span>READY FOR DEPLOYMENT</span></div>
     </div>
   </div>
 
   <!-- LEADERBOARD -->
   <div class="leaderboard">
-    <div class="lb-heading">// AGENT STANDINGS — NET FILES (EARNED MINUS MIB SEIZURES)</div>
+    <div class="lb-heading">// FIELD AGENT STANDINGS — ALL TIED AT MISSION START</div>
 
-    <!-- AGENT ROWS: ranked by net files. All show 0 Q2 files this week as individual
-         counts haven't been entered into the tracker yet — update weekly in dashboard. -->
-
-    <!-- Rank 1: Mitch / Rob tied at 0 net — Mitch shown first (BDR) -->
-    <div class="agent-row rank-1">
-      <div class="lb-rank">1</div>
-      <div class="lb-identity">
-        <div class="lb-role-tag"><span class="role-pip pip-bdr"></span>BDR</div>
-        <div class="lb-name">MITCH</div>
-      </div>
-      <div class="lb-files">
-        <div class="files-num">0</div>
-        <div class="files-label">Q2 FILES</div>
-      </div>
-      <div class="lb-mib">
-        <div class="mib-seized zero">—</div>
-        <div class="mib-label">MIB SEIZED</div>
-      </div>
-      <div class="lb-net">
-        <div class="net-num net-zero">0</div>
-        <div class="net-label">NET FILES</div>
-      </div>
-      <div class="lb-bar"><div class="lb-bar-fill" style="width:0%"></div></div>
-    </div>
-
-    <!-- Rank 2: Rob -->
-    <div class="agent-row rank-2">
-      <div class="lb-rank">2</div>
-      <div class="lb-identity">
-        <div class="lb-role-tag"><span class="role-pip pip-se"></span>SE</div>
-        <div class="lb-name">ROB</div>
-      </div>
-      <div class="lb-files">
-        <div class="files-num">0</div>
-        <div class="files-label">Q2 FILES</div>
-      </div>
-      <div class="lb-mib">
-        <div class="mib-seized zero">—</div>
-        <div class="mib-label">MIB SEIZED</div>
-      </div>
-      <div class="lb-net">
-        <div class="net-num net-zero">0</div>
-        <div class="net-label">NET FILES</div>
-      </div>
-      <div class="lb-bar"><div class="lb-bar-fill" style="width:0%"></div></div>
-    </div>
-
-    <!-- Rank 3: Sasha (MIB -50) -->
-    <div class="agent-row rank-3">
-      <div class="lb-rank">3</div>
+    <!-- Sasha -->
+    <div class="agent-row">
+      <div class="lb-rank">—</div>
       <div class="lb-identity">
         <div class="lb-role-tag"><span class="role-pip pip-ae"></span>AE</div>
         <div class="lb-name">SASHA</div>
       </div>
-      <div class="lb-files">
-        <div class="files-num">0</div>
-        <div class="files-label">Q2 FILES</div>
-      </div>
-      <div class="lb-mib">
-        <div class="mib-seized">-50</div>
-        <div class="mib-label">MIB SEIZED</div>
-      </div>
-      <div class="lb-net">
-        <div class="net-num net-negative">-50</div>
-        <div class="net-label">NET FILES</div>
-      </div>
-      <div class="lb-bar"><div class="lb-bar-fill" style="width:0%"></div></div>
+      <div class="lb-files"><div class="files-num">0</div><div class="files-label">Q2 FILES</div></div>
+      <div class="lb-mib"><div class="mib-val">0</div><div class="mib-label">MIB SEIZED</div></div>
+      <div class="lb-net"><div class="net-val">0</div><div class="net-label">NET FILES</div></div>
     </div>
 
-    <!-- Rank 4: Ellie (MIB -20) -->
-    <div class="agent-row rank-4">
-      <div class="lb-rank">4</div>
+    <!-- Ellie -->
+    <div class="agent-row">
+      <div class="lb-rank">—</div>
       <div class="lb-identity">
         <div class="lb-role-tag"><span class="role-pip pip-ae"></span>AE</div>
         <div class="lb-name">ELLIE</div>
       </div>
-      <div class="lb-files">
-        <div class="files-num">0</div>
-        <div class="files-label">Q2 FILES</div>
-      </div>
-      <div class="lb-mib">
-        <div class="mib-seized">-20</div>
-        <div class="mib-label">MIB SEIZED</div>
-      </div>
-      <div class="lb-net">
-        <div class="net-num net-negative">-20</div>
-        <div class="net-label">NET FILES</div>
-      </div>
-      <div class="lb-bar"><div class="lb-bar-fill" style="width:0%"></div></div>
+      <div class="lb-files"><div class="files-num">0</div><div class="files-label">Q2 FILES</div></div>
+      <div class="lb-mib"><div class="mib-val">0</div><div class="mib-label">MIB SEIZED</div></div>
+      <div class="lb-net"><div class="net-val">0</div><div class="net-label">NET FILES</div></div>
     </div>
 
-    <!-- Rank 5: Silvia (MIB -100) -->
-    <div class="agent-row rank-5">
-      <div class="lb-rank">5</div>
+    <!-- Silvia -->
+    <div class="agent-row">
+      <div class="lb-rank">—</div>
       <div class="lb-identity">
         <div class="lb-role-tag"><span class="role-pip pip-ae"></span>AE</div>
         <div class="lb-name">SILVIA</div>
       </div>
-      <div class="lb-files">
-        <div class="files-num">0</div>
-        <div class="files-label">Q2 FILES</div>
-      </div>
-      <div class="lb-mib">
-        <div class="mib-seized">-100</div>
-        <div class="mib-label">MIB SEIZED</div>
-      </div>
-      <div class="lb-net">
-        <div class="net-num net-negative">-100</div>
-        <div class="net-label">NET FILES</div>
-      </div>
-      <div class="lb-bar"><div class="lb-bar-fill" style="width:0%"></div></div>
+      <div class="lb-files"><div class="files-num">0</div><div class="files-label">Q2 FILES</div></div>
+      <div class="lb-mib"><div class="mib-val">0</div><div class="mib-label">MIB SEIZED</div></div>
+      <div class="lb-net"><div class="net-val">0</div><div class="net-label">NET FILES</div></div>
     </div>
 
+    <!-- Mitch -->
+    <div class="agent-row">
+      <div class="lb-rank">—</div>
+      <div class="lb-identity">
+        <div class="lb-role-tag"><span class="role-pip pip-bdr"></span>BDR</div>
+        <div class="lb-name">MITCH</div>
+      </div>
+      <div class="lb-files"><div class="files-num">0</div><div class="files-label">Q2 FILES</div></div>
+      <div class="lb-mib"><div class="mib-val">0</div><div class="mib-label">MIB SEIZED</div></div>
+      <div class="lb-net"><div class="net-val">0</div><div class="net-label">NET FILES</div></div>
+    </div>
+
+    <!-- Rob -->
+    <div class="agent-row">
+      <div class="lb-rank">—</div>
+      <div class="lb-identity">
+        <div class="lb-role-tag"><span class="role-pip pip-se"></span>SE</div>
+        <div class="lb-name">ROB</div>
+      </div>
+      <div class="lb-files"><div class="files-num">0</div><div class="files-label">Q2 FILES</div></div>
+      <div class="lb-mib"><div class="mib-val">0</div><div class="mib-label">MIB SEIZED</div></div>
+      <div class="lb-net"><div class="net-val">0</div><div class="net-label">NET FILES</div></div>
+    </div>
+
+    <div class="tied-notice">// UPDATE THE WEEKLY TRACKER — RANKINGS WILL POPULATE AS THE MISSION PROGRESSES //</div>
   </div>
 
   <!-- FOOTER STATS -->
   <div class="footer-stats">
-    <div class="stat-block team-files">
+    <div class="stat-block s1">
       <div class="stat-label">// TEAM TOTAL FILES</div>
-      <div class="stat-value">1,100</div>
-      <div class="stat-sub">TARGET: 1,050 ✓ CLEARED</div>
+      <div class="stat-value">0</div>
+      <div class="stat-sub">TARGET: 1,050 FILES</div>
+      <div class="stat-progress"><div class="stat-progress-fill"></div></div>
     </div>
-    <div class="stat-block revenue">
+    <div class="stat-block s2">
       <div class="stat-label">// REVENUE CLOSED</div>
-      <div class="stat-value">$400K</div>
-      <div class="stat-sub">OF $570,000 GOAL</div>
-      <div class="stat-progress"><div class="stat-progress-fill" style="width:70%"></div></div>
+      <div class="stat-value">$0</div>
+      <div class="stat-sub">GOAL: $570,000</div>
+      <div class="stat-progress"><div class="stat-progress-fill"></div></div>
     </div>
-    <div class="stat-block disclosure">
-      <div class="stat-label">// TO DISCLOSURE DAY</div>
-      <div class="stat-value">$170K</div>
-      <div class="stat-sub">REVENUE REMAINING</div>
-      <div class="stat-progress"><div class="stat-progress-fill" style="width:30%"></div></div>
+    <div class="stat-block s3">
+      <div class="stat-label">// MAY CHECKPOINT</div>
+      <div class="stat-value">0</div>
+      <div class="stat-sub">TARGET: 380 FILES — LOCKED</div>
+      <div class="stat-progress"><div class="stat-progress-fill"></div></div>
     </div>
-    <div class="stat-block mib-total">
+    <div class="stat-block s4">
       <div class="stat-label">// MIB TOTAL SEIZURES</div>
-      <div class="stat-value">170</div>
-      <div class="stat-sub">FILES LOST TO NEURALYZER</div>
+      <div class="stat-value">0</div>
+      <div class="stat-sub">NO INCIDENTS YET</div>
     </div>
   </div>
 
 </div>
 
 <script>
-// Starfield
 const stars=document.getElementById('stars');
-for(let i=0;i<120;i++){
+for(let i=0;i<140;i++){
   const s=document.createElement('div');
   s.className='star';
-  const sz=Math.random()<0.7?1:Math.random()<0.5?1.5:2;
-  s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${(2+Math.random()*4).toFixed(1)}s;animation-delay:${(Math.random()*4).toFixed(1)}s;opacity:${(Math.random()*.4+.1).toFixed(2)}`;
+  const sz=Math.random()<.7?1:Math.random()<.5?1.5:2;
+  s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${(2+Math.random()*4).toFixed(1)}s;animation-delay:${(Math.random()*4).toFixed(1)}s;opacity:${(Math.random()*.3+.05).toFixed(2)}`;
   stars.appendChild(s);
 }
 </script>
