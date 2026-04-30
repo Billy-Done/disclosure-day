@@ -4,191 +4,176 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta http-equiv="refresh" content="300">
-<title>Operation: Disclosure Day — Live Leaderboard</title>
+<title>Operation: Disclosure Day — Leaderboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
   --amber:#f5a623;--green:#00e676;--red:#ff4444;--blue:#4fc3f7;
-  --purple:#ce93d8;--bg:#020508;--bg2:#07111e;--bg3:#0a1828;
-  --white:#dce9f5;
+  --purple:#ce93d8;--bg:#020508;--bg2:#07111e;--white:#dce9f5;
 }
-html,body{width:100%;height:100%;background:var(--bg);font-family:'Barlow Condensed',sans-serif;color:var(--white);overflow:hidden}
-.screen{width:100vw;height:100vh;display:grid;grid-template-rows:auto 1fr auto;position:relative;overflow:hidden}
-.screen::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:10;
+html,body{width:100%;height:100vh;background:var(--bg);font-family:'Barlow Condensed',sans-serif;color:var(--white);overflow:hidden}
+
+/* scan lines */
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:50;
   background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.1) 3px,rgba(0,0,0,.1) 4px)}
-.stars{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+
+/* stars */
+.stars{position:fixed;inset:0;z-index:0;pointer-events:none}
 .star{position:absolute;border-radius:50%;background:#fff;animation:tw var(--d,3s) ease-in-out infinite}
 @keyframes tw{0%,100%{opacity:.1}50%{opacity:.7}}
 
-/* LOADING */
-.loading{
-  position:fixed;inset:0;background:var(--bg);z-index:100;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
-}
+/* loading */
+.loading{position:fixed;inset:0;background:var(--bg);z-index:100;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
 .loading.hidden{display:none}
-.load-title{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:.2em;color:var(--amber)}
-.load-sub{font-family:'Share Tech Mono',monospace;font-size:11px;color:#3a6a8a;letter-spacing:.12em}
-.spinner{width:40px;height:40px;border:2px solid #0d2540;border-top-color:var(--amber);border-radius:50%;animation:spin 1s linear infinite}
+.spinner{width:44px;height:44px;border:2px solid #0d2540;border-top-color:var(--amber);border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+.load-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:.2em;color:var(--amber)}
+.load-sub{font-family:'Share Tech Mono',monospace;font-size:10px;color:#2a5a7a;letter-spacing:.12em}
 
-/* ERROR */
-.error-box{
-  position:fixed;inset:0;background:var(--bg);z-index:100;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
-  padding:40px;
+/* layout */
+.screen{
+  position:relative;z-index:2;
+  width:100%;height:100vh;
+  display:grid;
+  grid-template-rows:auto 1fr auto;
+  padding:40px 80px 32px;
+  gap:0;
 }
-.error-box.hidden{display:none}
-.error-title{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--red);letter-spacing:.1em}
-.error-msg{font-family:'Share Tech Mono',monospace;font-size:12px;color:#6a8aaa;max-width:700px;text-align:center;line-height:1.8}
-.error-debug{
-  margin-top:12px;background:#07111e;border:1px solid #0d2540;border-radius:4px;
-  padding:16px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#4a7090;
-  max-width:900px;max-height:300px;overflow-y:auto;white-space:pre-wrap;text-align:left;line-height:1.6;
-}
-.error-debug-label{font-size:9px;color:#2a4a6a;letter-spacing:.1em;margin-bottom:6px}
 
-/* HEADER */
-.header{position:relative;z-index:2;padding:20px 56px 0;display:flex;align-items:flex-start;justify-content:space-between}
-.op-label{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--red);letter-spacing:.25em;margin-bottom:4px;display:flex;align-items:center;gap:8px}
-.op-label::before{content:'';width:24px;height:1px;background:var(--red)}
-.op-title{font-family:'Bebas Neue',sans-serif;font-size:62px;line-height:.9;letter-spacing:.06em}
-.op-title em{color:var(--amber);font-style:normal}
-.op-sub{font-family:'Share Tech Mono',monospace;font-size:10px;color:#4a7a9a;letter-spacing:.14em;margin-top:6px}
-.header-right{text-align:right;padding-top:4px;display:flex;flex-direction:column;gap:5px;align-items:flex-end}
-.status-chip{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.12em;padding:4px 12px;border-radius:2px;display:inline-block}
-.chip-green{background:#001a0a;color:var(--green);border:1px solid #004d1a}
-.chip-amber{background:#1a0d00;color:var(--amber);border:1px solid #5a3a00}
-.chip-red{background:#1a0505;color:var(--red);border:1px solid #5a1a1a}
-.hstat{font-family:'Share Tech Mono',monospace;font-size:10px;color:#4a7a9a;letter-spacing:.08em;line-height:1}
-.hstat span{color:var(--amber)}
-.hstat span.g{color:var(--green)}
-.hstat span.r{color:var(--red)}
+/* header */
+.hdr{display:flex;align-items:flex-end;justify-content:space-between;padding-bottom:28px;border-bottom:1px solid #0a1828}
+.hdr-left{}
+.classified{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--red);letter-spacing:.28em;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.classified::before{content:'';width:28px;height:1px;background:var(--red)}
+.main-title{font-family:'Bebas Neue',sans-serif;font-size:80px;line-height:.85;letter-spacing:.06em}
+.main-title em{color:var(--amber);font-style:normal}
+.hdr-right{text-align:right;padding-bottom:8px}
+.week-label{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--blue);letter-spacing:.1em;line-height:1}
+.hdr-meta{font-family:'Share Tech Mono',monospace;font-size:10px;color:#2a5a7a;letter-spacing:.1em;line-height:1.9;margin-top:4px}
+.hdr-meta span{color:var(--amber)}
 
-/* LEADERBOARD */
-.leaderboard{position:relative;z-index:2;padding:14px 40px 4px;display:flex;flex-direction:column;gap:4px}
-.lb-heading{font-family:'Share Tech Mono',monospace;font-size:9px;color:#2a5a7a;letter-spacing:.2em;margin-bottom:8px;display:flex;align-items:center;gap:10px}
-.lb-heading::after{content:'';flex:1;height:1px;background:#081520}
+/* leaderboard */
+.lb{display:flex;flex-direction:column;justify-content:center;gap:10px;padding:24px 0}
+
 .agent-row{
-  display:grid;grid-template-columns:56px 1fr 220px 170px 150px;
-  align-items:stretch;border-radius:3px;position:relative;overflow:hidden;
-  background:rgba(7,17,30,0.7);
+  display:grid;
+  grid-template-columns:100px 1fr 320px;
+  align-items:center;
+  border-radius:4px;
+  position:relative;overflow:hidden;
+  padding:0 32px 0 0;
+  min-height:80px;
 }
-.agent-row::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:#0d2030}
-.r1::before{background:var(--amber);box-shadow:0 0 10px var(--amber)}.r1{background:rgba(245,166,35,.05)}
-.r2::before{background:#b0bec5}.r2{background:rgba(176,190,197,.03)}
-.r3::before{background:#cd7f32}.r3{background:rgba(160,82,45,.03)}
-.lb-rank{font-family:'Bebas Neue',sans-serif;font-size:42px;line-height:1;
-  display:flex;align-items:center;justify-content:center;padding:12px 0;color:#1e3a5a}
-.r1 .lb-rank{color:var(--amber)}.r2 .lb-rank{color:#b0bec5}.r3 .lb-rank{color:#cd7f32}
-.lb-identity{padding:12px 14px;display:flex;flex-direction:column;justify-content:center}
-.lb-role-tag{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.1em;color:#2a5a7a;display:flex;align-items:center;gap:4px;margin-bottom:2px}
-.role-pip{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.agent-row::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px}
+
+/* rank colours */
+.r1{background:rgba(245,166,35,.06)}.r1::before{background:var(--amber);box-shadow:0 0 14px var(--amber)}
+.r2{background:rgba(176,190,197,.03)}.r2::before{background:#b0bec5}
+.r3{background:rgba(160,82,45,.03)}.r3::before{background:#cd7f32}
+.r4,.r5{background:rgba(7,17,30,.6)}.r4::before,.r5::before{background:#1a3a5a}
+
+/* rank number */
+.rank{
+  font-family:'Bebas Neue',sans-serif;font-size:64px;line-height:1;
+  text-align:center;letter-spacing:.02em;color:#0d2030;
+}
+.r1 .rank{color:var(--amber)}.r2 .rank{color:#b0bec5}.r3 .rank{color:#cd7f32}
+
+/* name */
+.name-block{padding:0 20px}
+.role-tag{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.12em;color:#2a5a7a;display:flex;align-items:center;gap:5px;margin-bottom:2px}
+.role-pip{width:6px;height:6px;border-radius:50%;flex-shrink:0}
 .pip-ae{background:var(--blue)}.pip-bdr{background:var(--green)}.pip-se{background:var(--purple)}
-.lb-name{font-family:'Bebas Neue',sans-serif;font-size:50px;line-height:.9;letter-spacing:.05em;color:#1e3a5a}
-.r1 .lb-name{color:#fff}.r2 .lb-name{color:#c0ccd8}.r3 .lb-name{color:#c09060}
-.lb-files{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 0;border-left:1px solid #081828}
-.files-num{font-family:'Bebas Neue',sans-serif;font-size:58px;line-height:.9;letter-spacing:.03em;color:#1e3a5a}
+.name{font-family:'Bebas Neue',sans-serif;font-size:72px;line-height:.88;letter-spacing:.05em;color:#1e3a5a}
+.r1 .name{color:#fff;text-shadow:0 0 40px rgba(245,166,35,.15)}
+.r2 .name{color:#c8d8e8}.r3 .name{color:#c09060}
+
+/* files */
+.files-block{text-align:right}
+.files-num{
+  font-family:'Bebas Neue',sans-serif;font-size:96px;line-height:.88;
+  letter-spacing:.02em;color:#0d2030;
+}
 .r1 .files-num{color:var(--amber)}.r2 .files-num{color:#b0bec5}.r3 .files-num{color:#cd7f32}
-.files-label{font-family:'Share Tech Mono',monospace;font-size:8px;color:#2a4a6a;letter-spacing:.1em;margin-top:2px}
-.lb-mib{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 0;border-left:1px solid #081828}
-.mib-val{font-family:'Bebas Neue',sans-serif;font-size:30px;color:#1e3a5a;line-height:1;letter-spacing:.06em}
-.mib-val.has-mib{color:var(--red)}
-.mib-label{font-family:'Share Tech Mono',monospace;font-size:8px;color:#2a4a6a;letter-spacing:.1em;margin-top:2px}
-.lb-net{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 0;border-left:1px solid #081828}
-.net-val{font-family:'Bebas Neue',sans-serif;font-size:34px;line-height:1;letter-spacing:.05em}
-.net-pos{color:var(--green)}.net-zero{color:#1e3a5a}.net-neg{color:var(--red)}
-.net-label{font-family:'Share Tech Mono',monospace;font-size:8px;color:#2a4a6a;letter-spacing:.1em;margin-top:2px}
+.files-label{font-family:'Share Tech Mono',monospace;font-size:9px;color:#1a3550;letter-spacing:.14em;margin-top:2px}
 
-/* FOOTER */
-.footer-stats{position:relative;z-index:2;padding:10px 56px 20px;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;border-top:1px solid #081520;margin-top:4px}
-.stat-block{background:rgba(7,17,30,0.85);border:1px solid #0a1a28;border-radius:3px;padding:12px 16px;position:relative}
-.stat-block::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
-.s1::before{background:var(--amber)}.s2::before{background:var(--green)}
-.s3::before{background:var(--red)}.s4::before{background:var(--purple)}
-.stat-label{font-family:'Share Tech Mono',monospace;font-size:8px;color:#2a5a7a;letter-spacing:.14em;margin-bottom:4px}
-.stat-value{font-family:'Bebas Neue',sans-serif;font-size:40px;line-height:.95;letter-spacing:.04em}
-.s1 .stat-value{color:var(--amber)}.s2 .stat-value{color:var(--green)}.s3 .stat-value{color:var(--red)}.s4 .stat-value{color:var(--purple)}
-.stat-sub{font-family:'Share Tech Mono',monospace;font-size:8px;color:#2a5a7a;letter-spacing:.06em;margin-top:3px}
-.stat-bar{margin-top:6px;height:3px;background:#060e18;border-radius:2px;overflow:hidden}
-.stat-bar-fill{height:100%;border-radius:2px;transition:width .5s}
-.s2 .stat-bar-fill{background:linear-gradient(90deg,#004d1a,var(--green))}
-.s3 .stat-bar-fill{background:linear-gradient(90deg,#5a0000,var(--red))}
+/* divider line between rows */
+.agent-row+.agent-row{border-top:1px solid #060e18}
 
-/* refresh ticker */
-.refresh-tick{position:fixed;bottom:8px;right:16px;z-index:20;
-  font-family:'Share Tech Mono',monospace;font-size:9px;color:#0d2030;letter-spacing:.08em}
+/* footer */
+.footer{
+  border-top:1px solid #0a1828;padding-top:16px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.footer-left{font-family:'Share Tech Mono',monospace;font-size:9px;color:#1a3550;letter-spacing:.1em;line-height:2}
+.footer-left span{color:var(--amber)}
+.footer-right{font-family:'Share Tech Mono',monospace;font-size:9px;color:#1a3550;letter-spacing:.06em;text-align:right;line-height:2}
+.footer-right span{color:var(--green)}
+
+.refresh-tick{font-family:'Share Tech Mono',monospace;font-size:9px;color:#0d2030;letter-spacing:.08em}
+
+/* error */
+.err{position:fixed;inset:0;background:var(--bg);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:40px}
+.err.hidden{display:none}
+.err-title{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--red);letter-spacing:.1em}
+.err-msg{font-family:'Share Tech Mono',monospace;font-size:11px;color:#4a7090;max-width:680px;text-align:center;line-height:1.8}
+.debug{margin-top:8px;background:#07111e;border:1px solid #0d2540;border-radius:4px;padding:14px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#3a6080;max-width:900px;max-height:260px;overflow-y:auto;white-space:pre-wrap;line-height:1.6}
 </style>
 </head>
 <body>
 
+<div class="stars" id="stars"></div>
+
 <div class="loading" id="loading">
   <div class="spinner"></div>
   <div class="load-title">ACCESSING CLASSIFIED FILES</div>
-  <div class="load-sub">// PULLING LIVE DATA FROM MISSION CONTROL //</div>
+  <div class="load-sub">// CONNECTING TO MISSION CONTROL //</div>
 </div>
 
-<div class="error-box hidden" id="errorBox">
-  <div class="error-title">⚠ DATA FEED INTERRUPTED</div>
-  <div class="error-msg" id="errorMsg">Could not retrieve mission data. Check the CSV URL is still published in Google Sheets (File → Share → Publish to web).</div>
-  <div style="margin-top:8px">
-    <div class="error-debug-label">// RAW DATA RECEIVED (for debugging) //</div>
-    <div class="error-debug" id="debugDump">—</div>
-  </div>
+<div class="err hidden" id="errBox">
+  <div class="err-title">⚠ DATA FEED INTERRUPTED</div>
+  <div class="err-msg" id="errMsg">Could not load data. Make sure the sheet is still published via File → Share → Publish to web.</div>
+  <div class="debug" id="debugDump"></div>
 </div>
 
 <div class="screen" id="screen" style="display:none">
-  <div class="stars" id="stars"></div>
 
-  <div class="header">
-    <div>
-      <div class="op-label">CLASSIFIED — EYES ONLY</div>
-      <div class="op-title">OPERATION:<em>DISCLOSURE DAY</em></div>
-      <div class="op-sub" id="opSub">// Q2 2026 — LIVE AGENT LEADERBOARD //</div>
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="classified">TOP SECRET / CLASSIFIED</div>
+      <div class="main-title">OPERATION:<br><em>DISCLOSURE DAY</em></div>
     </div>
-    <div class="header-right">
-      <div class="status-chip" id="ddChip">LOADING...</div>
-      <div class="hstat">MAY CHECKPOINT &nbsp;<span id="mayStatus">—</span></div>
-      <div class="hstat">Q2 FILES &nbsp;<span id="q2FilesHdr">—</span> <span style="color:#2a5a7a">/ 1,050</span></div>
-      <div class="hstat">REVENUE &nbsp;<span id="revHdr">—</span> <span style="color:#2a5a7a">/ $570,000</span></div>
+    <div class="hdr-right">
+      <div class="week-label" id="weekLabel">Q2 2026</div>
+      <div class="hdr-meta">
+        TEAM FILES &nbsp;<span id="hTeamFiles">—</span> / 1,050<br>
+        REVENUE &nbsp;<span id="hRevenue">—</span> / $570,000<br>
+        <span id="hStatus" style="color:var(--red)">MISSION IN PROGRESS</span>
+      </div>
     </div>
   </div>
 
-  <div class="leaderboard">
-    <div class="lb-heading">// FIELD AGENT STANDINGS — NET FILES (EARNED MINUS MIB SEIZURES)</div>
-    <div id="agentRows"></div>
+  <div class="lb" id="lb"></div>
+
+  <div class="footer">
+    <div class="footer-left">
+      OPERATION: DISCLOSURE DAY — Q2 2026<br>
+      FILES INCLUDE MIB DEDUCTIONS — NET SCORE DETERMINES RANKING
+    </div>
+    <div class="footer-right">
+      <span id="mayFooter">MAY CHECKPOINT: LOCKED</span><br>
+      AUTO-REFRESH <span id="tick">5:00</span>
+    </div>
   </div>
 
-  <div class="footer-stats">
-    <div class="stat-block s1">
-      <div class="stat-label">// TEAM FILES</div>
-      <div class="stat-value" id="ftTeam">—</div>
-      <div class="stat-sub">TARGET: 1,050 FILES</div>
-    </div>
-    <div class="stat-block s2">
-      <div class="stat-label">// REVENUE CLOSED</div>
-      <div class="stat-value" id="ftRev">—</div>
-      <div class="stat-sub" id="ftRevSub">GOAL: $570,000</div>
-      <div class="stat-bar"><div class="stat-bar-fill" id="ftRevBar" style="width:0%"></div></div>
-    </div>
-    <div class="stat-block s3">
-      <div class="stat-label">// TO DISCLOSURE DAY</div>
-      <div class="stat-value" id="ftDd">—</div>
-      <div class="stat-sub" id="ftDdSub">FILES + REVENUE REMAINING</div>
-    </div>
-    <div class="stat-block s4">
-      <div class="stat-label">// MIB TOTAL SEIZURES</div>
-      <div class="stat-value" id="ftMib">—</div>
-      <div class="stat-sub">FILES LOST TO NEURALYZER</div>
-    </div>
-  </div>
 </div>
 
-<div class="refresh-tick" id="tick">AUTO-REFRESH: 5:00</div>
-
 <script>
-const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTMFTDOotOnT9dLP2wUa735JtcvjJu7RrLAcehX11SVVNBC_Euc085nFuHPMg0NzKYEX0-JnOKjAjzP/pub?gid=2068740891&single=true&output=csv';
+const CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTMFTDOotOnT9dLP2wUa735JtcvjJu7RrLAcehX11SVVNBC_Euc085nFuHPMg0NzKYEX0-JnOKjAjzP/pub?gid=2068740891&single=true&output=csv';
 
+// Agent definitions — order matches dashboard rows 16-20
 const AGENTS = [
   {name:'Sasha', role:'AE', pip:'ae'},
   {name:'Ellie', role:'AE', pip:'ae'},
@@ -197,183 +182,121 @@ const AGENTS = [
   {name:'Rob',   role:'SE', pip:'se'},
 ];
 
-// Which row index (0-based) and column index (0-based) holds each value in the CSV
-// We'll discover these from the debug dump on first run and update accordingly
-// Initial assumptions based on the dashboard structure we built:
-const MAP = {
-  mayFiles:  {r:6,  c:3},  // row 7  col D
-  q2Files:   {r:9,  c:3},  // row 10 col D
-  revenue:   {r:10, c:3},  // row 11 col D
-  // Agents: rows 15-19, cols B(1)=name, C(2)=role, D(3)=files, E(4)=mib
-  agentStart: 15,
-  agentNameCol: 1,
-  agentFilesCol: 3,
-  agentMibCol:  4,
-};
+// Row indices in the CSV (0-based):
+// Row 6  = May checkpoint files    col D (index 3)
+// Row 9  = Q2 cumulative files     col D (index 3)
+// Row 10 = Revenue                 col D (index 3)
+// Rows 15-19 = agents              col D (index 3) = net files
+const R_MAY   = 6;
+const R_Q2    = 9;
+const R_REV   = 10;
+const R_AGENT = 15; // first agent row; subsequent are +1, +2 etc.
+const C_VAL   = 3;  // col D
 
-function parseCSV(text){
-  return text.split('\n').map(row=>{
-    const cells=[]; let cur=''; let inQ=false;
-    for(let i=0;i<row.length;i++){
-      const ch=row[i];
-      if(ch==='"'){inQ=!inQ}
-      else if(ch===','&&!inQ){cells.push(cur.trim());cur=''}
-      else{cur+=ch}
+function parseCSV(txt){
+  return txt.split('\n').map(row=>{
+    const cells=[];let cur='';let q=false;
+    for(const ch of row){
+      if(ch==='"'){q=!q}
+      else if(ch===','&&!q){cells.push(cur.trim());cur=''}
+      else cur+=ch;
     }
-    cells.push(cur.trim()); return cells;
+    cells.push(cur.trim());
+    return cells;
   });
 }
 
-function numOf(v){
-  if(!v)return 0;
-  const n=parseFloat(String(v).replace(/[^0-9.\-]/g,''));
-  return isNaN(n)?0:n;
-}
-
+function num(v){const n=parseFloat(String(v||0).replace(/[^0-9.\-]/g,''));return isNaN(n)?0:n}
 function fmt(n){return Math.round(n).toLocaleString()}
-function fmtDlr(n){
-  const v=Math.round(n);
-  if(v>=1000)return '$'+(v/1000).toFixed(0)+'K';
-  return '$'+v.toLocaleString();
-}
+function fmtDlr(n){const v=Math.round(n);return v>=1000?'$'+(v/1000).toFixed(0)+'K':'$'+v.toLocaleString()}
 function clamp(v,a,b){return Math.min(Math.max(v,a),b)}
 
-function rankClass(i){return i===0?'r1':i===1?'r2':i===2?'r3':''}
+const RANK_CLASS=['r1','r2','r3','r4','r5'];
 
-function buildAgentRow(agent, rank, files, mib){
-  const net=files-mib;
-  const rc=rankClass(rank);
-  const mibClass=mib>0?'has-mib':'';
-  const netClass=net>0?'net-pos':net<0?'net-neg':'net-zero';
-  const rankNum=rank<3?rank+1:'—';
-  return `<div class="agent-row ${rc}" style="margin-bottom:4px">
-    <div class="lb-rank">${rankNum}</div>
-    <div class="lb-identity">
-      <div class="lb-role-tag"><span class="role-pip pip-${agent.pip}"></span>${agent.role}</div>
-      <div class="lb-name">${agent.name.toUpperCase()}</div>
+function rowHTML(agent, rank, files){
+  const rc = RANK_CLASS[rank]||'r5';
+  const rankDisplay = rank+1;
+  return `<div class="agent-row ${rc}">
+    <div class="rank">${rankDisplay}</div>
+    <div class="name-block">
+      <div class="role-tag"><span class="role-pip pip-${agent.pip}"></span>${agent.role}</div>
+      <div class="name">${agent.name.toUpperCase()}</div>
     </div>
-    <div class="lb-files">
+    <div class="files-block">
       <div class="files-num">${fmt(files)}</div>
-      <div class="files-label">Q2 FILES</div>
-    </div>
-    <div class="lb-mib">
-      <div class="mib-val ${mibClass}">${mib>0?'-'+fmt(mib):'—'}</div>
-      <div class="mib-label">MIB SEIZED</div>
-    </div>
-    <div class="lb-net">
-      <div class="net-val ${netClass}">${fmt(net)}</div>
-      <div class="net-label">NET FILES</div>
+      <div class="files-label">CLASSIFIED FILES</div>
     </div>
   </div>`;
 }
 
-async function fetchAndRender(){
+async function load(){
   try{
-    const resp = await fetch(CSV_URL+'&t='+Date.now());
-    if(!resp.ok) throw new Error('HTTP '+resp.status);
-    const text = await resp.text();
-    const rows = parseCSV(text);
+    const r = await fetch(CSV+'&cachebust='+Date.now());
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const txt = await r.text();
+    const rows = parseCSV(txt);
 
-    // Show raw dump in case parsing is off
-    const dumpLines = rows.slice(0,25).map((r,i)=>`[${i}] ${r.map((c,j)=>`[${j}]="${c}"`).join(' | ')}`).join('\n');
-    document.getElementById('debugDump').textContent = dumpLines;
+    // Debug dump
+    document.getElementById('debugDump').textContent =
+      rows.slice(0,22).map((r,i)=>`[${i}] `+r.map((c,j)=>`[${j}]=${JSON.stringify(c)}`).join(' | ')).join('\n');
 
-    // Pull values
-    const mayFiles = numOf(rows[MAP.mayFiles.r]?.[MAP.mayFiles.c]);
-    const q2Files  = numOf(rows[MAP.q2Files.r]?.[MAP.q2Files.c]);
-    const revenue  = numOf(rows[MAP.revenue.r]?.[MAP.revenue.c]);
+    const mayFiles = num(rows[R_MAY]?.[C_VAL]);
+    const q2Files  = num(rows[R_Q2]?.[C_VAL]);
+    const revenue  = num(rows[R_REV]?.[C_VAL]);
 
-    // Agent files + mib from rows 15-19
-    const agentData = AGENTS.map((a,i)=>{
-      const row = rows[MAP.agentStart+i] || [];
-      const files = numOf(row[MAP.agentFilesCol]);
-      const mib   = numOf(row[MAP.agentMibCol]);
-      return {...a, files, mib, net: files-mib};
-    });
+    // Pull each agent's net files
+    const agents = AGENTS.map((a,i)=>({
+      ...a,
+      files: num(rows[R_AGENT+i]?.[C_VAL])
+    }));
 
-    // Sort by net files descending
-    const sorted = [...agentData].sort((a,b)=>b.net-a.net);
+    // Sort descending by files, stable
+    const sorted = [...agents].map((a,i)=>({...a,origIdx:i}))
+      .sort((a,b)=>b.files-a.files);
 
-    // Build leaderboard
-    document.getElementById('agentRows').innerHTML =
-      sorted.map((a,i)=>buildAgentRow(a, i, a.files, a.mib)).join('');
+    // Render
+    document.getElementById('lb').innerHTML = sorted.map((a,rank)=>rowHTML(a,rank,a.files)).join('');
 
     // Header
-    const mayPct = clamp(Math.round(mayFiles/380*100),0,100);
-    const ddFilesPct = clamp(Math.round(q2Files/1050*100),0,100);
-    const revPct = clamp(Math.round(revenue/570000*100),0,100);
     const ddDone = q2Files>=1050 && revenue>=570000;
     const mayDone = mayFiles>=380;
+    document.getElementById('hTeamFiles').textContent = fmt(q2Files);
+    document.getElementById('hRevenue').textContent   = fmtDlr(revenue);
+    document.getElementById('hStatus').textContent    = ddDone ? '🛸 DISCLOSURE DAY ACHIEVED' : 'MISSION IN PROGRESS';
+    document.getElementById('hStatus').style.color    = ddDone ? 'var(--green)' : 'var(--red)';
+    document.getElementById('mayFooter').textContent  = mayDone ? 'MAY CHECKPOINT: ✓ UNLOCKED' : `MAY CHECKPOINT: ${fmt(mayFiles)} / 380 FILES`;
+    document.getElementById('mayFooter').style.color  = mayDone ? 'var(--green)' : 'var(--amber)';
 
-    document.getElementById('mayStatus').textContent = mayDone ? '✓ UNLOCKED' : `${fmt(mayFiles)} / 380`;
-    document.getElementById('mayStatus').style.color = mayDone ? 'var(--green)' : 'var(--amber)';
-    document.getElementById('q2FilesHdr').textContent = fmt(q2Files);
-    document.getElementById('revHdr').textContent = fmtDlr(revenue);
-
-    const chip = document.getElementById('ddChip');
-    if(ddDone){
-      chip.textContent='🚨 DISCLOSURE DAY ACHIEVED';
-      chip.className='status-chip chip-green';
-    } else if(ddFilesPct>=80){
-      chip.textContent='⚡ CLOSE — PUSH NOW';
-      chip.className='status-chip chip-amber';
-    } else {
-      chip.textContent='🔒 MISSION IN PROGRESS';
-      chip.className='status-chip chip-red';
-    }
-
-    // Footer
-    document.getElementById('ftTeam').textContent = fmt(q2Files);
-    document.getElementById('ftRev').textContent = fmtDlr(revenue);
-    document.getElementById('ftRevBar').style.width = revPct+'%';
-    document.getElementById('ftRevSub').textContent = revPct+'% OF $570,000 GOAL';
-
-    const filesRem = Math.max(0,1050-q2Files);
-    const revRem   = Math.max(0,570000-revenue);
-    if(ddDone){
-      document.getElementById('ftDd').textContent='ACHIEVED';
-      document.getElementById('ftDdSub').textContent='THE TRUTH IS OUT THERE 🛸';
-    } else {
-      document.getElementById('ftDd').textContent= filesRem>0 ? fmt(filesRem)+' files' : fmtDlr(revRem);
-      document.getElementById('ftDdSub').textContent= filesRem>0 ? 'FILES REMAINING' : 'REVENUE REMAINING';
-    }
-
-    const totalMib = agentData.reduce((s,a)=>s+a.mib,0);
-    document.getElementById('ftMib').textContent = fmt(totalMib);
-
-    // Show screen
     document.getElementById('loading').classList.add('hidden');
-    document.getElementById('errorBox').classList.add('hidden');
+    document.getElementById('errBox').classList.add('hidden');
     document.getElementById('screen').style.display='grid';
 
-  } catch(err){
+  } catch(e){
     document.getElementById('loading').classList.add('hidden');
-    document.getElementById('errorMsg').textContent = err.message +
-      ' — Make sure the sheet is published (File → Share → Publish to web) and the URL is correct.';
-    document.getElementById('errorBox').classList.remove('hidden');
+    document.getElementById('errMsg').textContent = e.message;
+    document.getElementById('errBox').classList.remove('hidden');
   }
 }
 
 // Stars
 const s=document.getElementById('stars');
-for(let i=0;i<140;i++){
+for(let i=0;i<160;i++){
   const el=document.createElement('div');el.className='star';
-  const sz=Math.random()<.7?1:Math.random()<.5?1.5:2;
-  el.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${(2+Math.random()*5).toFixed(1)}s;animation-delay:${(Math.random()*5).toFixed(1)}s;opacity:${(Math.random()*.4+.1).toFixed(2)}`;
+  const sz=Math.random()<.7?1:1.5;
+  el.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${(2+Math.random()*5).toFixed(1)}s;animation-delay:${(Math.random()*5).toFixed(1)}s;opacity:${(Math.random()*.5+.1).toFixed(2)}`;
   s.appendChild(el);
 }
 
-// Countdown ticker
+// Countdown + auto-refresh
 let secs=300;
 setInterval(()=>{
   secs--;
-  if(secs<=0){secs=300;fetchAndRender()}
-  const m=Math.floor(secs/60);
-  const s2=String(secs%60).padStart(2,'0');
-  document.getElementById('tick').textContent=`AUTO-REFRESH: ${m}:${s2}`;
+  if(secs<=0){secs=300;load()}
+  const m=Math.floor(secs/60),ss=String(secs%60).padStart(2,'0');
+  document.getElementById('tick').textContent=`${m}:${ss}`;
 },1000);
 
-fetchAndRender();
+load();
 </script>
 </body>
 </html>
