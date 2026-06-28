@@ -7,24 +7,20 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --cream:   #F4EEE3;
-      --navy:    #1A1A2E;
-      --blue:    #1A3CD8;
-      --blue-lt: rgba(26, 60, 216, 0.08);
-      --green:   #15803d;
-      --green-lt:rgba(21, 128, 61, 0.07);
-      --green-bd:rgba(21, 128, 61, 0.18);
-      --amber:   #b45309;
-      --amber-lt:rgba(180, 83, 9, 0.07);
-      --amber-bd:rgba(180, 83, 9, 0.18);
-      --card-bg: #ffffff;
-      --border:  #e4ddd1;
-      --muted:   #7a7060;
-      --text:    #1A1A2E;
+      --cream:    #F4EEE3;
+      --navy:     #1A1A2E;
+      --blue:     #1A3CD8;
+      --green:    #15803d;
+      --green-lt: rgba(21, 128, 61, 0.07);
+      --green-bd: rgba(21, 128, 61, 0.18);
+      --amber:    #b45309;
+      --amber-lt: rgba(180, 83, 9, 0.07);
+      --amber-bd: rgba(180, 83, 9, 0.18);
+      --border:   #e4ddd1;
+      --muted:    #7a7060;
+      --text:     #1A1A2E;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       font-family: 'Inter', -apple-system, sans-serif;
       background: var(--cream);
@@ -45,44 +41,20 @@
       flex-shrink: 0;
     }
     .h-left { display: flex; align-items: baseline; gap: 10px; }
-    .h-eyebrow {
-      font-size: 9px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: rgba(255,255,255,0.4);
-    }
-    .h-title {
-      font-family: 'DM Serif Display', Georgia, serif;
-      font-size: 22px;
-      font-weight: 400;
-      color: white;
-      letter-spacing: -0.2px;
-    }
+    .h-eyebrow { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.4); }
+    .h-title { font-family: 'DM Serif Display', Georgia, serif; font-size: 22px; color: white; }
     .h-title em { color: #6b8cff; font-style: normal; }
-
     .h-right { display: flex; align-items: center; gap: 20px; }
     .h-metric { text-align: right; }
-    .h-label {
-      font-size: 9px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
-      color: rgba(255,255,255,0.35);
-    }
+    .h-label { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: rgba(255,255,255,0.35); }
     .h-val { font-size: 17px; font-weight: 800; }
     .h-val.green { color: #4ade80; }
     .h-val.amber { color: #fbbf24; }
     .h-val.white { color: white; }
-
-    .pill {
-      background: var(--blue);
-      border-radius: 10px;
-      padding: 8px 16px;
-      text-align: center;
-    }
+    .pill { background: #dc2626; border-radius: 10px; padding: 8px 16px; text-align: center; animation: pulse 2s ease-in-out infinite; }
     .pill-num { font-size: 30px; font-weight: 900; line-height: 1; color: white; }
-    .pill-sub { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.65); }
+    .pill-sub { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.75); }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.75; } }
 
     /* ─── 3 COLUMNS ─── */
     .cols {
@@ -93,9 +65,8 @@
       padding: 10px;
       min-height: 0;
     }
-
     .col {
-      background: var(--card-bg);
+      background: #ffffff;
       border: 1px solid var(--border);
       border-radius: 14px;
       display: flex;
@@ -104,67 +75,19 @@
       min-height: 0;
       box-shadow: 0 1px 3px rgba(26,26,46,0.06);
     }
-
-    /* AE name bar */
-    .col-head {
-      padding: 12px 16px 10px;
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-    .col-name {
-      font-family: 'DM Serif Display', Georgia, serif;
-      font-size: 20px;
-      font-weight: 400;
-      color: var(--navy);
-      letter-spacing: -0.2px;
-    }
-    .col-sub { font-size: 10px; color: var(--muted); margin-top: 2px; font-weight: 500; }
+    .col-head { padding: 12px 16px 10px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .col-name { font-family: 'DM Serif Display', Georgia, serif; font-size: 20px; color: var(--navy); }
+    .col-sub  { font-size: 10px; color: var(--muted); margin-top: 2px; font-weight: 500; }
 
     /* Won block */
-    .won-block {
-      padding: 9px 16px;
-      background: var(--green-lt);
-      border-bottom: 1px solid var(--green-bd);
-      flex-shrink: 0;
-    }
-    .won-label {
-      font-size: 9px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
-      color: var(--green);
-      margin-bottom: 2px;
-    }
-    .won-num {
-      font-family: 'DM Serif Display', Georgia, serif;
-      font-size: 24px;
-      font-weight: 400;
-      color: var(--green);
-      letter-spacing: -0.3px;
-    }
+    .won-block { padding: 9px 16px; background: var(--green-lt); border-bottom: 1px solid var(--green-bd); flex-shrink: 0; }
+    .won-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--green); margin-bottom: 2px; }
+    .won-num   { font-family: 'DM Serif Display', Georgia, serif; font-size: 24px; color: var(--green); }
 
-    /* Open pipeline block */
-    .pipe-block {
-      padding: 8px 16px;
-      background: var(--amber-lt);
-      border-bottom: 1px solid var(--amber-bd);
-      flex-shrink: 0;
-    }
-    .pipe-label {
-      font-size: 9px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
-      color: var(--amber);
-      margin-bottom: 2px;
-    }
-    .pipe-num {
-      font-family: 'DM Serif Display', Georgia, serif;
-      font-size: 22px;
-      font-weight: 400;
-      color: var(--amber);
-      letter-spacing: -0.3px;
-    }
+    /* Pipeline block */
+    .pipe-block { padding: 8px 16px; background: var(--amber-lt); border-bottom: 1px solid var(--amber-bd); flex-shrink: 0; }
+    .pipe-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--amber); margin-bottom: 2px; }
+    .pipe-num   { font-family: 'DM Serif Display', Georgia, serif; font-size: 22px; color: var(--amber); }
 
     /* ─── DEAL CARDS ─── */
     .deals {
@@ -177,7 +100,6 @@
       overflow: hidden;
       background: #faf8f4;
     }
-
     .d-card {
       flex: 1;
       min-height: 0;
@@ -191,35 +113,27 @@
       justify-content: center;
       gap: 3px;
     }
-
-    /* Stage border colours — Yotpo blue palette */
-    .sc  { border-left-color: var(--blue); }
-    .sp  { border-left-color: #6366f1; }
-    .se  { border-left-color: #8b5cf6; }
+    .sc { border-left-color: var(--blue); }
+    .sp { border-left-color: #6366f1; }
+    .se { border-left-color: #8b5cf6; }
 
     .d-top  { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
-    .d-acct {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--navy);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+    .d-acct { font-size: 13px; font-weight: 700; color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .d-amt  { font-size: 15px; font-weight: 800; color: var(--navy); flex-shrink: 0; }
-    .d-bot  { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-    .d-stage {
-      font-size: 9px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      padding: 2px 7px;
-      border-radius: 100px;
-      background: #f1f0ed;
+    .d-bot  { display: flex; justify-content: space-between; align-items: center; }
+    .d-stage { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 7px; border-radius: 100px; background: #f1f0ed; color: var(--muted); }
+    .d-close { font-size: 10px; font-weight: 700; color: #dc2626; }
+
+    /* Empty state */
+    .empty {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
       color: var(--muted);
+      font-style: italic;
     }
-    .d-close { font-size: 10px; color: var(--muted); font-weight: 500; }
-    .d-close.hot { color: #dc2626; font-weight: 700; }
 
     /* ─── TICKER ─── */
     .ticker {
@@ -231,83 +145,69 @@
       flex-shrink: 0;
       overflow: hidden;
     }
-    .t-tag {
-      font-size: 9px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: #6b8cff;
-      flex-shrink: 0;
-    }
-    .t-sep { width: 1px; height: 14px; background: rgba(255,255,255,0.12); flex-shrink: 0; }
+    .t-tag   { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #6b8cff; flex-shrink: 0; }
+    .t-sep   { width: 1px; height: 14px; background: rgba(255,255,255,0.12); flex-shrink: 0; }
     .t-track { overflow: hidden; flex: 1; }
-    .t-text {
-      font-size: 12px;
-      color: rgba(255,255,255,0.55);
-      white-space: nowrap;
-      display: inline-block;
-      animation: slide 26s linear infinite;
-    }
+    .t-text  { font-size: 12px; color: rgba(255,255,255,0.55); white-space: nowrap; display: inline-block; animation: slide 26s linear infinite; }
     @keyframes slide { 0% { transform: translateX(120vw); } 100% { transform: translateX(-100%); } }
   </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="header">
   <div class="h-left">
     <span class="h-eyebrow">Yotpo · Q2 2026</span>
-    <span class="h-title">Final Push — <em>Sasha · Silvia · Ellie</em></span>
+    <span class="h-title">Last Day — <em>Sasha · Silvia · Ellie</em></span>
   </div>
   <div class="h-right">
     <div class="h-metric">
       <div class="h-label">Won Delta Bookings Q2</div>
-      <div class="h-val green">$243k USD</div>
+      <div class="h-val green">$272k USD</div>
     </div>
     <div class="h-metric">
       <div class="h-label">Open Pipeline</div>
-      <div class="h-val amber">$236k USD</div>
+      <div class="h-val amber">$123k USD</div>
     </div>
     <div class="h-metric">
       <div class="h-label">Open Deals</div>
-      <div class="h-val white">14</div>
+      <div class="h-val white">7</div>
     </div>
     <div class="h-metric">
       <div class="h-label">Updated</div>
-      <div class="h-val white" style="font-size:12px;font-weight:600">22 Jun 2026</div>
+      <div class="h-val white" style="font-size:12px;font-weight:600">29 Jun 2026</div>
     </div>
     <div class="pill">
-      <div class="pill-num" id="days">—</div>
-      <div class="pill-sub">Days Left</div>
+      <div class="pill-num" id="days">1</div>
+      <div class="pill-sub">Day Left</div>
     </div>
   </div>
 </div>
 
-<!-- 3 COLUMNS -->
 <div class="cols">
 
   <!-- SASHA BERGER -->
   <div class="col">
     <div class="col-head">
       <div class="col-name">Sasha Berger</div>
-      <div class="col-sub">7 open deals · all closing Jun 30</div>
+      <div class="col-sub">2 open deals · closing today & tomorrow</div>
     </div>
     <div class="won-block">
       <div class="won-label">✅ Won Delta Bookings Q2</div>
-      <div class="won-num">$135k</div>
+      <div class="won-num">$144k</div>
     </div>
     <div class="pipe-block">
       <div class="pipe-label">🔥 Open Pipeline</div>
-      <div class="pipe-num">$73k</div>
+      <div class="pipe-num">$19k</div>
     </div>
     <div class="deals">
-      <div class="d-card sc"><div class="d-top"><div class="d-acct">GODIVA Australia</div><div class="d-amt">$17k</div></div><div class="d-bot"><div class="d-stage">Contracting</div><div class="d-close hot">Jun 30 🔥</div></div></div>
-      <div class="d-card sc"><div class="d-top"><div class="d-acct">Manettas Seafood</div><div class="d-amt">$12k</div></div><div class="d-bot"><div class="d-stage">Contracting</div><div class="d-close hot">Jun 30 🔥</div></div></div>
-      <div class="d-card sp"><div class="d-top"><div class="d-acct">Vanguard Design Group</div><div class="d-amt">$11k</div></div><div class="d-bot"><div class="d-stage">Propose</div><div class="d-close hot">Jun 30 🔥</div></div></div>
-      <div class="d-card se"><div class="d-top"><div class="d-acct">Reistor</div><div class="d-amt">$10k</div></div><div class="d-bot"><div class="d-stage">Evaluation</div><div class="d-close hot">Jun 30 🔥</div></div></div>
-      <div class="d-card sc"><div class="d-top"><div class="d-acct">Ena Pelly</div><div class="d-amt">$8k</div></div><div class="d-bot"><div class="d-stage">Contracting</div><div class="d-close hot">Jun 30 🔥</div></div></div>
-      <div class="d-card se"><div class="d-top"><div class="d-acct">Legoe Heritage</div><div class="d-amt">$8k</div></div><div class="d-bot"><div class="d-stage">Evaluation</div><div class="d-close hot">Jun 30 🔥</div></div></div>
-      <div class="d-card sp"><div class="d-top"><div class="d-acct">Posy Intimates</div><div class="d-amt">$7k</div></div><div class="d-bot"><div class="d-stage">Propose</div><div class="d-close hot">Jun 30 🔥</div></div></div>
+      <div class="d-card sc">
+        <div class="d-top"><div class="d-acct">Manettas Seafood</div><div class="d-amt">$12k</div></div>
+        <div class="d-bot"><div class="d-stage">Contracting</div><div class="d-close">Jun 30 🔥</div></div>
+      </div>
+      <div class="d-card sp">
+        <div class="d-top"><div class="d-acct">Posy Intimates</div><div class="d-amt">$7k</div></div>
+        <div class="d-bot"><div class="d-stage">Propose</div><div class="d-close">Jun 30 🔥</div></div>
+      </div>
     </div>
   </div>
 
@@ -323,13 +223,25 @@
     </div>
     <div class="pipe-block">
       <div class="pipe-label">🔥 Open Pipeline</div>
-      <div class="pipe-num">$77k</div>
+      <div class="pipe-num">$81k</div>
     </div>
     <div class="deals">
-      <div class="d-card sp"><div class="d-top"><div class="d-acct">Hairhouse</div><div class="d-amt">$34k</div></div><div class="d-bot"><div class="d-stage">Propose</div><div class="d-close hot">Jun 30 🔥</div></div></div>
-      <div class="d-card sp"><div class="d-top"><div class="d-acct">OrotonGroup</div><div class="d-amt">$23k</div></div><div class="d-bot"><div class="d-stage">Propose</div><div class="d-close hot">Jun 30 🔥</div></div></div>
-      <div class="d-card sp"><div class="d-top"><div class="d-acct">Bikes Online AU</div><div class="d-amt">$10k</div></div><div class="d-bot"><div class="d-stage">Propose</div><div class="d-close hot">Jun 30 🔥</div></div></div>
-      <div class="d-card sp"><div class="d-top"><div class="d-acct">Forcast</div><div class="d-amt">$10k</div></div><div class="d-bot"><div class="d-stage">Propose</div><div class="d-close hot">Jun 30 🔥</div></div></div>
+      <div class="d-card sp">
+        <div class="d-top"><div class="d-acct">Hairhouse</div><div class="d-amt">$34k</div></div>
+        <div class="d-bot"><div class="d-stage">Propose</div><div class="d-close">Jun 30 🔥</div></div>
+      </div>
+      <div class="d-card sp">
+        <div class="d-top"><div class="d-acct">OrotonGroup</div><div class="d-amt">$27k</div></div>
+        <div class="d-bot"><div class="d-stage">Propose</div><div class="d-close">Jun 30 🔥</div></div>
+      </div>
+      <div class="d-card sp">
+        <div class="d-top"><div class="d-acct">Bikes Online AU</div><div class="d-amt">$10k</div></div>
+        <div class="d-bot"><div class="d-stage">Propose</div><div class="d-close">Jun 30 🔥</div></div>
+      </div>
+      <div class="d-card sp">
+        <div class="d-top"><div class="d-acct">Forcast</div><div class="d-amt">$9k</div></div>
+        <div class="d-bot"><div class="d-stage">Propose</div><div class="d-close">Jun 30 🔥</div></div>
+      </div>
     </div>
   </div>
 
@@ -337,42 +249,40 @@
   <div class="col">
     <div class="col-head">
       <div class="col-name">Ellie Hayes</div>
-      <div class="col-sub">4 open deals · closing Jun 25–26</div>
+      <div class="col-sub">1 open deal · closing today</div>
     </div>
     <div class="won-block">
       <div class="won-label">✅ Won Delta Bookings Q2</div>
-      <div class="won-num">$17k</div>
+      <div class="won-num">$37k</div>
     </div>
     <div class="pipe-block">
       <div class="pipe-label">🔥 Open Pipeline</div>
-      <div class="pipe-num">$86k</div>
+      <div class="pipe-num">$23k</div>
     </div>
     <div class="deals">
-      <div class="d-card sp"><div class="d-top"><div class="d-acct">Adventure Operations</div><div class="d-amt">$31k</div></div><div class="d-bot"><div class="d-stage">Propose</div><div class="d-close hot">Jun 26 🔥</div></div></div>
-      <div class="d-card sc"><div class="d-top"><div class="d-acct">Treasury Wine Estates</div><div class="d-amt">$23k</div></div><div class="d-bot"><div class="d-stage">Contracting</div><div class="d-close hot">Jun 25 🔥</div></div></div>
-      <div class="d-card sp"><div class="d-top"><div class="d-acct">Bfree Australia</div><div class="d-amt">$20k</div></div><div class="d-bot"><div class="d-stage">Propose</div><div class="d-close hot">Jun 26 🔥</div></div></div>
-      <div class="d-card sp"><div class="d-top"><div class="d-acct">Pure Mama Limited</div><div class="d-amt">$11k</div></div><div class="d-bot"><div class="d-stage">Propose</div><div class="d-close hot">Jun 25 🔥</div></div></div>
+      <div class="d-card sc">
+        <div class="d-top"><div class="d-acct">Treasury Wine Estates</div><div class="d-amt">$23k</div></div>
+        <div class="d-bot"><div class="d-stage">Contracting</div><div class="d-close">Jun 25 — get it done! 🔥</div></div>
+      </div>
     </div>
   </div>
 
 </div>
 
-<!-- TICKER -->
 <div class="ticker">
-  <div class="t-tag">Final Push</div>
+  <div class="t-tag">Last Day</div>
   <div class="t-sep"></div>
   <div class="t-track"><span class="t-text" id="ticker"></span></div>
 </div>
 
 <script>
-  const QTR_END = new Date('2026-06-30T23:59:59+10:00');
   const MSGS = [
-    "8 days left — $236k USD in open delta bookings on this board. Sasha, Silvia, Ellie: the whole office is behind you. Let's close! 💪",
-    "Non-sales team: these deals fund next quarter's headcount, product, and growth. We all win when they close. 🤝",
-    "Sasha has closed $135k in delta bookings this Q — $73k more in play by Jun 30. Godiva and Manettas are in Contracting. Push! 🚀",
-    "Silvia: $91k booked, $77k in open pipe — Hairhouse at $34k and Oroton at $23k, all in Propose. Get those signatures! ⚡",
-    "Ellie: $86k in open delta bookings, all closing Jun 25–26. Adventure Ops, TWE, Bfree, Pure Mama — this week is it! 🔥",
-    "Q3 starts fresh. Q2 glory is right now — push hard, finish strong, close the quarter the right way. 💰",
+    "TODAY IS THE LAST DAY OF Q2. $123k in open pipeline — every single deal still matters. Sasha, Silvia, Ellie: finish strong! 💪",
+    "Sasha has closed $144k this quarter — outstanding work. Two deals left. Let's make it $163k by midnight. 🚀",
+    "Silvia: $81k in open pipe, all closing today. Hairhouse ($34k) and Oroton ($27k) — get those signatures NOW. ⚡",
+    "Ellie: TWE in Contracting at $23k — this one's ready to close. Let's get it over the line today! 🔥",
+    "Non-sales team: $272k already won this quarter by these three. That is an incredible result. Show them some love today. 🙌",
+    "Q3 starts tomorrow. But today? Today we close everything that's left. One last push. Let's go! 💰",
   ];
   let i = 0;
   function tick() {
@@ -381,9 +291,16 @@
     void el.offsetWidth; el.style.animation = '';
   }
   tick(); setInterval(tick, 26000);
-  function days() { return Math.max(0, Math.ceil((QTR_END - Date.now()) / 86400000)); }
-  document.getElementById('days').textContent = days();
-  setInterval(() => document.getElementById('days').textContent = days(), 60000);
+
+  function updateDays() {
+    const end = new Date('2026-06-30T23:59:59+10:00');
+    const d = Math.max(0, Math.ceil((end - Date.now()) / 86400000));
+    const el = document.getElementById('days');
+    el.textContent = d;
+    el.closest('.pill').querySelector('.pill-sub').textContent = d === 1 ? 'Day Left' : d === 0 ? 'Today!' : 'Days Left';
+  }
+  updateDays();
+  setInterval(updateDays, 60000);
 </script>
 </body>
 </html>
